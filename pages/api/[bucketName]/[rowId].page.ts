@@ -2,16 +2,13 @@ import { NextApiHandler } from "next";
 import { z } from "zod";
 import { prisma } from "../../../server/prisma";
 import { GetRowResponse } from "./responseTypes";
+import { stringToInt } from "../../../server/utils";
 
 export const handler: NextApiHandler = async (req, res) => {
   const { bucketName, rowId } = z
     .object({
       bucketName: z.string(),
-      rowId: z
-        .string()
-        .nonempty()
-        .refine((s) => !Number.isNaN(Number.parseInt(s, 10)))
-        .transform((s) => Number.parseInt(s, 10)),
+      rowId: stringToInt,
     })
     .parse(req.query);
 

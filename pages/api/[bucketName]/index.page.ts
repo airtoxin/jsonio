@@ -6,6 +6,7 @@ import {
   CreateRowResponse,
   ListRowsResponse,
 } from "./responseTypes";
+import { stringToInt } from "../../../server/utils";
 
 export const handler: NextApiHandler = async (req, res) => {
   const { bucketName } = z.object({ bucketName: z.string() }).parse(req.query);
@@ -57,6 +58,12 @@ export const handler: NextApiHandler = async (req, res) => {
 
   // list rows
   if (req.method === "GET") {
+    const { size = 100, page = 1 } = z
+      .object({
+        size: stringToInt((int) => 1 <= int && int <= 100).optional(),
+        page: stringToInt((int) => 1 <= int).optional(),
+      })
+      .parse(req.query);
     const total = await prisma.row.count({
       where: {
         bucket: {
@@ -79,6 +86,8 @@ export const handler: NextApiHandler = async (req, res) => {
       orderBy: {
         updatedAt: "desc",
       },
+      take: size,
+      skip: (page - 1) * size,
     });
 
     const body: ListRowsResponse = {
