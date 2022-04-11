@@ -10,14 +10,17 @@ datasource db {
 }
 
 model Bucket {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-  row  Row[]
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  row       Row[]
+  createdAt DateTime @default(now())
 }
 
 model Row {
-  id       Int     @id @default(autoincrement())
-  json     Json
-  bucket   Bucket? @relation(fields: [bucketId], references: [id])
-  bucketId Int
+  id        Int      @id @default(autoincrement())
+  json      Json
+  bucket    Bucket?  @relation(fields: [bucketId], references: [id])
+  bucketId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
