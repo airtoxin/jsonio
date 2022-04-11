@@ -1,0 +1,23 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model Bucket {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  row  Row[]
+}
+
+model Row {
+  id       Int     @id @default(autoincrement())
+  json     Json
+  bucket   Bucket? @relation(fields: [bucketId], references: [id])
+  bucketId Int
+}
