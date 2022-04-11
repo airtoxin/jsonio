@@ -57,6 +57,13 @@ export const handler: NextApiHandler = async (req, res) => {
 
   // list rows
   if (req.method === "GET") {
+    const total = await prisma.row.count({
+      where: {
+        bucket: {
+          name: bucketName,
+        },
+      },
+    });
     const rows = await prisma.row.findMany({
       select: {
         id: true,
@@ -75,6 +82,7 @@ export const handler: NextApiHandler = async (req, res) => {
     });
 
     const body: ListRowsResponse = {
+      total,
       rows,
     };
     res.status(200).json(body);

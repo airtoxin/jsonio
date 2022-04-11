@@ -11,6 +11,7 @@ export type CreateRowResponse = {
 };
 
 export type ListRowsResponse = {
+  total: number;
   rows: Array<{
     id: number;
     json: any;
