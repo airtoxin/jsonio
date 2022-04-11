@@ -8,7 +8,7 @@ export const handler: NextApiHandler = async (req, res) => {
   const { bucketName, rowId } = z
     .object({
       bucketName: z.string(),
-      rowId: stringToInt,
+      rowId: stringToInt(),
     })
     .parse(req.query);
 
