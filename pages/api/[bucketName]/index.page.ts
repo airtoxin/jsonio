@@ -1,31 +1,40 @@
 import { NextApiHandler } from "next";
 import { prisma } from "../../../server/prisma";
 import { z } from "zod";
+import {
+  CreateBucketResponse,
+  CreateRowResponse,
+  ListRowsResponse,
+} from "./responseTypes";
 
 export const handler: NextApiHandler = async (req, res) => {
   const { bucketName } = z.object({ bucketName: z.string() }).parse(req.query);
 
   // create bucket
   if (req.method === "PUT") {
-    await prisma.bucket.create({
+    const body: CreateBucketResponse = await prisma.bucket.create({
+      select: {
+        name: true,
+        createdAt: true,
+      },
       data: {
         name: bucketName,
       },
     });
 
-    res.status(200).json({
-      bucketName,
-    });
+    res.status(200).json(body);
     return;
   }
 
   // create row
   if (req.method === "POST") {
     const json = z.object({}).passthrough().parse(req.body);
-    const data = await prisma.row.create({
+    const body: CreateRowResponse = await prisma.row.create({
       select: {
         id: true,
         json: true,
+        createdAt: true,
+        updatedAt: true,
       },
       data: {
         json,
@@ -42,7 +51,7 @@ export const handler: NextApiHandler = async (req, res) => {
       },
     });
 
-    res.status(200).json(data);
+    res.status(200).json(body);
     return;
   }
 
@@ -65,7 +74,10 @@ export const handler: NextApiHandler = async (req, res) => {
       },
     });
 
-    res.status(200).json(rows);
+    const body: ListRowsResponse = {
+      rows,
+    };
+    res.status(200).json(body);
     return;
   }
 
