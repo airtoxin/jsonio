@@ -4,7 +4,14 @@ import { prisma } from "../../../server/prisma";
 
 export const handler: NextApiHandler = async (req, res) => {
   const { bucketName, rowId } = z
-    .object({ bucketName: z.string(), rowId: z.number() })
+    .object({
+      bucketName: z.string(),
+      rowId: z
+        .string()
+        .nonempty()
+        .refine((s) => !Number.isNaN(Number.parseInt(s, 10)))
+        .transform((s) => Number.parseInt(s, 10)),
+    })
     .parse(req.query);
 
   if (req.method === "GET") {
