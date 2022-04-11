@@ -8,16 +8,25 @@ export type CreateRowResponse = {
   json: any;
   createdAt: Date;
   updatedAt: Date;
+  bucket: {
+    name: string;
+    createdAt: Date;
+    totalRows: number;
+  };
 };
 
 export type ListRowsResponse = {
-  total: number;
   rows: Array<{
     id: number;
     json: any;
     createdAt: Date;
     updatedAt: Date;
   }>;
+  bucket: {
+    name: string;
+    createdAt: Date;
+    totalRows: number;
+  };
 };
 
 export type GetRowResponse = {
@@ -25,4 +34,9 @@ export type GetRowResponse = {
   json: any;
   createdAt: Date;
   updatedAt: Date;
+  bucket: {
+    name: string;
+    createdAt: Date;
+    totalRows: number;
+  };
 };

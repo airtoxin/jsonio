@@ -1,5 +1,4 @@
 import { NextApiHandler } from "next";
-import { prisma } from "../../../server/prisma";
 import { z } from "zod";
 import {
   CreateBucketResponse,
@@ -7,21 +6,19 @@ import {
   ListRowsResponse,
 } from "./responseTypes";
 import { stringToInt } from "../../../server/utils";
+import { bucketService } from "../../../server/BucketService";
+import { rowService } from "../../../server/RowService";
 
 export const handler: NextApiHandler = async (req, res) => {
   const { bucketName } = z.object({ bucketName: z.string() }).parse(req.query);
 
   // create bucket
   if (req.method === "PUT") {
-    const body: CreateBucketResponse = await prisma.bucket.create({
-      select: {
-        name: true,
-        createdAt: true,
-      },
-      data: {
-        name: bucketName,
-      },
-    });
+    const createBucketResult = await bucketService.createBucket(bucketName);
+    const body: CreateBucketResponse = {
+      name: createBucketResult.name,
+      createdAt: createBucketResult.createdAt,
+    };
 
     res.status(200).json(body);
     return;
@@ -30,27 +27,18 @@ export const handler: NextApiHandler = async (req, res) => {
   // create row
   if (req.method === "POST") {
     const json = z.object({}).passthrough().parse(req.body);
-    const body: CreateRowResponse = await prisma.row.create({
-      select: {
-        id: true,
-        json: true,
-        createdAt: true,
-        updatedAt: true,
+    const createRowResult = await rowService.createRow(bucketName, json);
+    const body: CreateRowResponse = {
+      id: createRowResult.id,
+      json: createRowResult.json,
+      createdAt: createRowResult.createdAt,
+      updatedAt: createRowResult.updatedAt,
+      bucket: {
+        name: createRowResult.bucket.name,
+        createdAt: createRowResult.bucket.createdAt,
+        totalRows: createRowResult.bucket.totalRows,
       },
-      data: {
-        json,
-        bucket: {
-          connectOrCreate: {
-            where: {
-              name: bucketName,
-            },
-            create: {
-              name: bucketName,
-            },
-          },
-        },
-      },
-    });
+    };
 
     res.status(200).json(body);
     return;
@@ -64,35 +52,18 @@ export const handler: NextApiHandler = async (req, res) => {
         page: stringToInt((int) => 1 <= int).optional(),
       })
       .parse(req.query);
-    const total = await prisma.row.count({
-      where: {
-        bucket: {
-          name: bucketName,
-        },
-      },
-    });
-    const rows = await prisma.row.findMany({
-      select: {
-        id: true,
-        json: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-      where: {
-        bucket: {
-          name: bucketName,
-        },
-      },
-      orderBy: {
-        updatedAt: "desc",
-      },
-      take: size,
-      skip: (page - 1) * size,
+    const listRowsResult = await rowService.listRows(bucketName, {
+      size,
+      page,
     });
 
     const body: ListRowsResponse = {
-      total,
-      rows,
+      rows: listRowsResult.rows,
+      bucket: {
+        name: listRowsResult.bucket.name,
+        createdAt: listRowsResult.bucket.createdAt,
+        totalRows: listRowsResult.bucket.totalRows,
+      },
     };
     res.status(200).json(body);
     return;

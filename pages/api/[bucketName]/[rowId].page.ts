@@ -1,8 +1,8 @@
 import { NextApiHandler } from "next";
 import { z } from "zod";
-import { prisma } from "../../../server/prisma";
 import { GetRowResponse } from "./responseTypes";
 import { stringToInt } from "../../../server/utils";
+import { rowService } from "../../../server/RowService";
 
 export const handler: NextApiHandler = async (req, res) => {
   const { bucketName, rowId } = z
@@ -14,26 +14,18 @@ export const handler: NextApiHandler = async (req, res) => {
 
   // get row
   if (req.method === "GET") {
-    const [row] = await prisma.row.findMany({
-      select: {
-        id: true,
-        json: true,
-        createdAt: true,
-        updatedAt: true,
+    const getRowResult = await rowService.getRow(bucketName, rowId);
+    const body: GetRowResponse = {
+      id: getRowResult.id,
+      json: getRowResult.json,
+      createdAt: getRowResult.createdAt,
+      updatedAt: getRowResult.updatedAt,
+      bucket: {
+        name: getRowResult.bucket.name,
+        createdAt: getRowResult.bucket.createdAt,
+        totalRows: getRowResult.bucket.totalRows,
       },
-      where: {
-        id: rowId,
-        bucket: {
-          name: bucketName,
-        },
-      },
-    });
-    if (row == null) {
-      res.status(404).end();
-      return;
-    }
-
-    const body: GetRowResponse = row;
+    };
     return res.status(200).json(body);
   }
 
