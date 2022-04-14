@@ -24,5 +24,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: yarn
-      - run: yarn prisma db push
+      - run: yarn dotenv -e .env.test yarn prisma db push
       - run: yarn test
