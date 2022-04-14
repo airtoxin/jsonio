@@ -17,16 +17,16 @@ export class BucketService {
   }
 
   public async deleteBucket(bucketName: string): Promise<DeleteBucketResult> {
-    const bucket = await this.prisma.bucket.deleteMany({
-      where: {
-        name: bucketName,
-      },
-    });
     const rows = await this.prisma.row.deleteMany({
       where: {
         bucket: {
           name: bucketName,
         },
+      },
+    });
+    const bucket = await this.prisma.bucket.deleteMany({
+      where: {
+        name: bucketName,
       },
     });
     return {
