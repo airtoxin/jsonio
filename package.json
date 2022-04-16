@@ -12,6 +12,7 @@
   "dependencies": {
     "@prisma/client": "3.12.0",
     "google-auth-library": "^7.14.1",
+    "make-error-cause": "^2.3.0",
     "next": "12.1.4",
     "prisma": "^3.12.0",
     "react": "18.0.0",
