@@ -1,13 +1,36 @@
 import type { NextPage } from "next";
-import GoogleLogin from "react-google-login";
+import GoogleLogin, {
+  GoogleLoginResponse,
+  GoogleLoginResponseOffline,
+} from "react-google-login";
+import { GoogleOauthClientId } from "./constants";
+import { useCallback, useState } from "react";
 
 const Home: NextPage = () => {
+  const [error, setError] = useState("");
+  const handleSuccess = useCallback(
+    (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
+      console.log("@response", response);
+      if ("profileObj" in response) {
+        fetch("/api/login", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer: ${response.accessToken}`,
+          },
+        });
+      } else {
+        setError("Network offline");
+      }
+    },
+    []
+  );
+
+  if (error) return <div>Error: {error}</div>;
   return (
     <GoogleLogin
-      clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-      buttonText="Login"
-      onSuccess={responseGoogle}
-      onFailure={responseGoogle}
+      clientId={GoogleOauthClientId}
+      onSuccess={handleSuccess}
+      onFailure={(error) => setError(JSON.stringify(error))}
       cookiePolicy={"single_host_origin"}
     />
   );
