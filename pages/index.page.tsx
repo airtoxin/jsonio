@@ -15,9 +15,11 @@ const Home: NextPage = () => {
         fetch("/api/login", {
           method: "POST",
           headers: {
-            Authorization: `Bearer: ${response.accessToken}`,
+            Authorization: `Bearer: ${response.tokenId}`,
           },
-        });
+        })
+          .then((res) => res.json())
+          .then(console.log);
       } else {
         setError("Network offline");
       }
