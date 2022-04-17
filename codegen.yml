@@ -1,0 +1,15 @@
+schema: schema.ts
+documents:
+  - "**/*.graphql"
+  - "**/*.tsx"
+
+generates:
+  pages/models.gen.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-query
+  server/models.gen.ts:
+    plugins:
+      - typescript
+      - typescript-resolvers

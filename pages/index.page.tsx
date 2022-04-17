@@ -5,6 +5,15 @@ import GoogleLogin, {
 } from "react-google-login";
 import { GoogleOauthClientId } from "./constants";
 import { useCallback, useState } from "react";
+import gql from "graphql-tag";
+
+gql`
+  query HomePage {
+    me {
+      email
+    }
+  }
+`;
 
 const Home: NextPage = () => {
   const [error, setError] = useState("");
