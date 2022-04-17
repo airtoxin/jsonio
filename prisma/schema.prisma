@@ -9,11 +9,19 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
+model Token {
+  id         String    @id
+  createdAt  DateTime  @default(now())
+  createdBy  String
+  lastUsedAt DateTime?
+}
+
 model Bucket {
   id        Int      @id @default(autoincrement())
   name      String   @unique
   row       Row[]
   createdAt DateTime @default(now())
+  createdBy String?
 }
 
 model Row {

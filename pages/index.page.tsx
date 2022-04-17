@@ -8,6 +8,7 @@ import { useCallback, useState } from "react";
 
 const Home: NextPage = () => {
   const [error, setError] = useState("");
+  const [token, setToken] = useState("");
   const handleSuccess = useCallback(
     (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
       console.log("@response", response);

@@ -8,9 +8,18 @@ import {
 import { stringToInt } from "../../../server/utils";
 import { bucketService } from "../../../server/BucketService";
 import { rowService } from "../../../server/RowService";
+import { authService } from "../../../server/AuthService";
+import { ApplicationError } from "../../../server/errors";
 
 export const handler: NextApiHandler = async (req, res) => {
   const { bucketName } = z.object({ bucketName: z.string() }).parse(req.query);
+  const idToken = req.headers.authorization?.startsWith("Bearer: ")
+    ? req.headers.authorization.slice("Bearer: ".length)
+    : null;
+  const account =
+    idToken != null ? await authService.getAccount(idToken) : null;
+  if (account instanceof ApplicationError)
+    return res.status(401).end() as unknown as void;
 
   // create bucket
   if (req.method === "PUT") {
