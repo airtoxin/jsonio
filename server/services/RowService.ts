@@ -7,7 +7,8 @@ export class RowService {
 
   public async createRow(
     bucketName: string,
-    rowData: P.InputJsonValue
+    rowData: P.InputJsonValue,
+    createdBy: string
   ): Promise<CreateRowResult> {
     const result = await this.prisma.row.create({
       select: {
@@ -60,6 +61,7 @@ export class RowService {
 
   public async getRow(
     bucketName: string,
+    createdBy: string,
     rowId: number
   ): Promise<GetRowResult> {
     const row = await this.prisma.row.findFirst({
@@ -106,6 +108,7 @@ export class RowService {
 
   public async listRows(
     bucketName: string,
+    createdBy: string,
     { size, page }: { size: number; page: number }
   ): Promise<ListRowsResult> {
     const bucket = await this.prisma.bucket.findUnique({

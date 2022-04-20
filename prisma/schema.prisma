@@ -21,7 +21,7 @@ model Bucket {
   name      String   @unique
   row       Row[]
   createdAt DateTime @default(now())
-  createdBy String?
+  createdBy String
 }
 
 model Row {

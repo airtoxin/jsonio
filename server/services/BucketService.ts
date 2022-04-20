@@ -3,7 +3,10 @@ import { prisma as p, Prisma } from "../dataSources/prisma";
 export class BucketService {
   constructor(private prisma: Prisma = p) {}
 
-  public async createBucket(bucketName: string): Promise<CreateBucketResult> {
+  public async createBucket(
+    bucketName: string,
+    createdBy: string
+  ): Promise<CreateBucketResult> {
     return this.prisma.bucket.create({
       select: {
         id: true,
@@ -12,21 +15,27 @@ export class BucketService {
       },
       data: {
         name: bucketName,
+        createdBy,
       },
     });
   }
 
-  public async deleteBucket(bucketName: string): Promise<DeleteBucketResult> {
+  public async deleteBucket(
+    bucketName: string,
+    createdBy: string
+  ): Promise<DeleteBucketResult> {
     const rows = await this.prisma.row.deleteMany({
       where: {
         bucket: {
           name: bucketName,
+          createdBy,
         },
       },
     });
     const bucket = await this.prisma.bucket.deleteMany({
       where: {
         name: bucketName,
+        createdBy,
       },
     });
     return {
