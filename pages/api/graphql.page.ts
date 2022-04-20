@@ -2,7 +2,7 @@ import { typeDefs } from "../../schema";
 import { resolvers } from "../../server/resolvers";
 import { createServer } from "@graphql-yoga/node";
 import { NextApiRequest, NextApiResponse } from "next";
-import { authService } from "../../server/AuthService";
+import { authService } from "../../server/services/AuthService";
 import { prisma } from "../../server/prisma";
 import { Context } from "../../server/resolvers/Context";
 import { AccountDataSource } from "../../server/dataSources/AccountDataSource";

@@ -2,7 +2,7 @@ import { NextApiHandler } from "next";
 import { z } from "zod";
 import { GetRowResponse } from "./responseTypes";
 import { stringToInt } from "../../../server/utils";
-import { rowService } from "../../../server/RowService";
+import { rowService } from "../../../server/services/RowService";
 
 export const handler: NextApiHandler = async (req, res) => {
   const { bucketName, rowId } = z

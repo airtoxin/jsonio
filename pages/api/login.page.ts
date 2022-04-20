@@ -7,7 +7,7 @@ import {
   IdVerificationError,
   InvalidPayloadFormatError,
   PayloadNotFoundError,
-} from "../../server/AuthService";
+} from "../../server/services/AuthService";
 
 const client = new OAuth2Client({
   clientId: GoogleOauthClientId,

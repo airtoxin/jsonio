@@ -6,9 +6,9 @@ import {
   ListRowsResponse,
 } from "./responseTypes";
 import { stringToInt } from "../../../server/utils";
-import { bucketService } from "../../../server/BucketService";
-import { rowService } from "../../../server/RowService";
-import { authService } from "../../../server/AuthService";
+import { bucketService } from "../../../server/services/BucketService";
+import { rowService } from "../../../server/services/RowService";
+import { authService } from "../../../server/services/AuthService";
 import { ApplicationError } from "../../../server/errors";
 
 export const handler: NextApiHandler = async (req, res) => {

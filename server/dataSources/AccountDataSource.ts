@@ -3,7 +3,7 @@ import {
   IdVerificationError,
   InvalidPayloadFormatError,
   PayloadNotFoundError,
-} from "../AuthService";
+} from "../services/AuthService";
 import { ApplicationError } from "../errors";
 
 export class AccountDataSource {
