@@ -7,6 +7,11 @@ export const resolvers: Resolvers = {
     me: async (parent, args, { dataSources }) => {
       return dataSources.account.getAccount();
     },
+    tokens: async (parent, args, { dataSources }) => {
+      const account = dataSources.account.getAccount();
+      if (account == null) return [];
+      return [];
+    },
   },
   Mutation: {
     login: async (parent, args, { dataSources }) => {
@@ -19,7 +24,7 @@ export const resolvers: Resolvers = {
       return dataSources.prisma.token.create({
         data: {
           id: randomUUID(),
-          createdBy: account.email,
+          createdBy: account.emailHash,
         },
       });
     },

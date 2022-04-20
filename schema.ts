@@ -4,7 +4,7 @@ export const typeDefs = gql`
   scalar Date
 
   type Account {
-    email: ID!
+    emailHash: ID!
     name: String!
     picture: String
   }

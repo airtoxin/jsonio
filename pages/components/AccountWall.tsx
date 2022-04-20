@@ -13,7 +13,7 @@ import { GoogleOauthClientId } from "../constants";
 gql`
   query AccountWall {
     me {
-      email
+      emailHash
       name
       picture
     }

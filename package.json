@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "run-p dev:*",
+    "dev": "run-p dev:**:*",
     "dev:server": "dotenv -e .env -- next dev",
     "dev:codegen:gql": "dotenv -e .env -- graphql-codegen --watch",
     "dev:codegen:prisma": "dotenv -e .env -- prisma generate --watch",
