@@ -1,15 +1,27 @@
 schema: schema.ts
 documents:
-  - "**/*.graphql"
-  - "**/*.tsx"
+  - "**/!(*.gen).graphql"
+  - "**/!(*.gen).tsx"
+  - "**/!(*.gen).ts"
 
 generates:
-  pages/models.gen.ts:
+  types.gen.ts:
     plugins:
       - typescript
+  pages/:
+    preset: near-operation-file
+    presetConfig:
+      extension: .gen.ts
+      baseTypesPath: ../types.gen.ts
+    plugins:
       - typescript-operations
       - typescript-react-query
+    config:
+      fetcher:
+        func: '@gen_root/pages/reactQueryFetcher#reactQueryFetcher'
   server/models.gen.ts:
     plugins:
       - typescript
       - typescript-resolvers
+    config:
+      contextType: "./resolvers/Context#Context"

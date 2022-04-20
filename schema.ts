@@ -21,6 +21,7 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    login: Account
+    login: Boolean!
+    createToken: Token!
   }
 `;
