@@ -24,5 +24,6 @@ export const typeDefs = gql`
   type Mutation {
     login: Boolean!
     createToken: Token!
+    deleteToken(id: ID!): Boolean!
   }
 `;

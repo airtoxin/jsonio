@@ -1,4 +1,10 @@
-import { FunctionComponent, PropsWithChildren, useCallback } from "react";
+import {
+  FunctionComponent,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import gql from "graphql-tag";
 import {
   useAccountWallLoginMutation,
@@ -27,6 +33,11 @@ gql`
 export const AccountWall: FunctionComponent<PropsWithChildren<{}>> = ({
   children,
 }) => {
+  const [isSsr, setIsSsr] = useState(true);
+  useEffect(() => {
+    setIsSsr(false);
+  }, []);
+
   const { data } = useAccountWallQuery();
   const { mutateAsync } = useAccountWallLoginMutation();
   const handleSuccess = useCallback(
@@ -34,7 +45,11 @@ export const AccountWall: FunctionComponent<PropsWithChildren<{}>> = ({
       if ("profileObj" in response) {
         global.localStorage?.setItem("auth-token", response.tokenId);
         mutateAsync({}).then((account) => {
-          console.log("@account", account);
+          if (!account.login) {
+            global.localStorage?.removeItem("auth-token");
+          } else {
+            global.window.location.reload();
+          }
         });
       } else {
         throw new Error(`network error`);
@@ -43,7 +58,7 @@ export const AccountWall: FunctionComponent<PropsWithChildren<{}>> = ({
     [mutateAsync]
   );
 
-  if (data == null) return null;
+  if (isSsr || data == null) return null;
   return data.me != null ? (
     <>{children}</>
   ) : (
