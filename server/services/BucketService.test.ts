@@ -24,6 +24,7 @@ describe("createBucket", () => {
         id: expect.any(Number),
         name: "test_bucket",
         createdAt: expect.any(Date),
+        createdBy: null,
       },
     ]);
   });
