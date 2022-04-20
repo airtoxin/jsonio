@@ -18,6 +18,7 @@ export const typeDefs = gql`
 
   type Query {
     me: Account
+    tokens: [Token!]!
   }
 
   type Mutation {

@@ -3,11 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "dotenv -e .env.test -- jest --runInBand"
+    "dev": "run-p dev:*",
+    "dev:server": "dotenv -e .env -- next dev",
+    "dev:codegen:gql": "dotenv -e .env -- graphql-codegen --watch",
+    "dev:codegen:prisma": "dotenv -e .env -- prisma generate --watch",
+    "codegen": "run-p codegen:*",
+    "codegen:gql": "dotenv -e .env -- graphql-codegen",
+    "codegen:prisma": "dotenv -e .env -- prisma generate",
+    "build": "dotenv -e .env -- next build",
+    "start": "dotenv -e .env -- next start",
+    "format": "dotenv -e .env -- prettier --write --ignore-path .gitignore .",
+    "test": "run-s test:*",
+    "test:format": "dotenv -e .env.test -- prettier --list-different --ignore-path .gitignore .",
+    "test:lint": "dotenv -e .env.test -- next lint",
+    "test:unit": "dotenv -e .env.test -- jest --runInBand"
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.3.9",
@@ -40,6 +49,7 @@
     "eslint": "8.13.0",
     "eslint-config-next": "12.1.4",
     "jest": "^27.5.1",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.6.2",
     "ts-jest": "^27.1.4",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
