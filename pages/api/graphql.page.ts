@@ -4,24 +4,29 @@ import { createServer } from "@graphql-yoga/node";
 import { NextApiRequest, NextApiResponse } from "next";
 import { authService } from "../../server/AuthService";
 import { prisma } from "../../server/prisma";
+import { Context } from "../../server/resolvers/Context";
+import { AccountDataSource } from "../../server/dataSources/AccountDataSource";
 
 const server = createServer<{
   req: NextApiRequest;
   res: NextApiResponse;
 }>({
   schema: { typeDefs, resolvers },
-  context: async (initialContext) => {
+  context: async (initialContext): Promise<Context> => {
     const authorization = initialContext.request.headers.get("authorization");
     const account = authorization?.startsWith("Bearer: ")
       ? await authService
           .getAccount(authorization.slice("Bearer: ".length))
-          .catch(() => null)
+          .catch((error) => {
+            console.error(error);
+            return null;
+          })
       : null;
     return {
       ...initialContext,
-      account,
       dataSources: {
         prisma,
+        account: new AccountDataSource(account),
       },
     };
   },

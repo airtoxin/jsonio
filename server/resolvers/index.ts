@@ -4,21 +4,22 @@ import { GraphQLYogaError } from "@graphql-yoga/node";
 
 export const resolvers: Resolvers = {
   Query: {
-    me: async (parent, args, context) => {
-      return context.account;
+    me: async (parent, args, { dataSources }) => {
+      return dataSources.account.getAccount();
     },
   },
   Mutation: {
-    login: async (parent, args, context) => {
-      return context.account != null;
+    login: async (parent, args, { dataSources }) => {
+      const account = dataSources.account.getAccount();
+      return account != null;
     },
-    createToken: async (parent, args, context) => {
-      if (context.account == null)
-        throw new GraphQLYogaError(`Authentication failed`);
-      return context.dataSources.prisma.token.create({
+    createToken: async (parent, args, { dataSources }) => {
+      const account = dataSources.account.getAccount();
+      if (account == null) throw new GraphQLYogaError(`Authentication failed`);
+      return dataSources.prisma.token.create({
         data: {
           id: randomUUID(),
-          createdBy: context.account.email,
+          createdBy: account.email,
         },
       });
     },

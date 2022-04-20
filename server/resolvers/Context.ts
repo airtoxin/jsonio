@@ -1,10 +1,10 @@
 import { YogaInitialContext } from "@graphql-yoga/common/types";
-import { Account } from "../models.gen";
 import { PrismaClient } from "@prisma/client";
+import { AccountDataSource } from "../dataSources/AccountDataSource";
 
 export type Context = Readonly<YogaInitialContext> & {
-  readonly account: Account | null;
   readonly dataSources: {
     readonly prisma: PrismaClient;
+    readonly account: AccountDataSource;
   };
 };

@@ -32,7 +32,7 @@ export const AccountWall: FunctionComponent<PropsWithChildren<{}>> = ({
   const handleSuccess = useCallback(
     (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
       if ("profileObj" in response) {
-        localStorage.setItem("auth-token", response.accessToken);
+        global.localStorage?.setItem("auth-token", response.tokenId);
         mutateAsync({}).then((account) => {
           console.log("@account", account);
         });
