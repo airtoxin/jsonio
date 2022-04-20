@@ -1,4 +1,4 @@
-import { prisma as p, Prisma } from "../prisma";
+import { prisma as p, Prisma } from "../dataSources/prisma";
 
 export class BucketService {
   constructor(private prisma: Prisma = p) {}

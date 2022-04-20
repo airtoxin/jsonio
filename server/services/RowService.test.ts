@@ -1,4 +1,4 @@
-import { prisma } from "../prisma";
+import { prisma } from "../dataSources/prisma";
 import { RowService } from "./RowService";
 
 describe("createRow", () => {

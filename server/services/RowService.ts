@@ -1,4 +1,4 @@
-import { prisma as p, Prisma } from "../prisma";
+import { prisma as p, Prisma } from "../dataSources/prisma";
 import { Prisma as P } from "@prisma/client";
 import assert from "assert";
 
