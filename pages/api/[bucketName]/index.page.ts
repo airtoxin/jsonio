@@ -11,7 +11,9 @@ import { rowService } from "../../../server/services/RowService";
 import { prisma } from "../../../server/dataSources/prisma";
 
 export const handler: NextApiHandler = async (req, res) => {
-  const { bucketName } = z.object({ bucketName: z.string() }).parse(req.query);
+  const parsed = z.object({ bucketName: z.string() }).safeParse(req.query);
+  if (!parsed.success) return res.status(400).end() as unknown as void;
+  const { bucketName } = parsed.data;
   const tokenId = req.headers.authorization?.startsWith("Bearer: ")
     ? req.headers.authorization.slice("Bearer: ".length)
     : null;
