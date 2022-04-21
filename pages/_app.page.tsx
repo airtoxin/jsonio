@@ -5,7 +5,6 @@ import {
   QueryErrorResetBoundary,
 } from "react-query";
 import { ErrorBoundary } from "react-error-boundary";
-import { AccountWall } from "./components/AccountWall";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,14 +23,19 @@ function MyApp({ Component, pageProps }: AppProps) {
           fallbackRender={({ resetErrorBoundary }) => (
             <div>
               There was an error!
-              <button onClick={() => resetErrorBoundary()}>Try again</button>
+              <button
+                onClick={() => {
+                  window.localStorage.clear();
+                  resetErrorBoundary();
+                }}
+              >
+                Try again
+              </button>
             </div>
           )}
         >
           <QueryClientProvider client={queryClient}>
-            <AccountWall>
-              <Component {...pageProps} />
-            </AccountWall>
+            <Component {...pageProps} />
           </QueryClientProvider>
         </ErrorBoundary>
       )}

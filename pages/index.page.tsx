@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import gql from "graphql-tag";
 import {
   useHomePageCreateTokenMutation,
@@ -6,6 +6,7 @@ import {
   useHomePageQuery,
 } from "@gen_root/pages/index.page.gen";
 import { useCallback } from "react";
+import { AccountWall } from "@gen_root/pages/components/AccountWall";
 
 gql`
   query HomePage {
@@ -54,23 +55,31 @@ const Home: NextPage = () => {
 
   if (data == null) return null;
   return (
-    <div>
-      {data.me?.picture && <img src={data.me.picture} alt="profile" />}
-      <button onClick={handleClickLogout}>logout</button>
-      <hr />
-      <button onClick={handleClickCreateToken}>create token</button>
+    <AccountWall>
       <div>
-        {data.tokens.map((token) => (
-          <div key={token.id} style={{ border: "solid 1px black" }}>
-            <div>id: {token.id}</div>
-            <div>createdAt: {token.createdAt}</div>
-            <div>lastUsedAt: {token.lastUsedAt}</div>
-            <button onClick={handleClickDeleteToken(token.id)}>delete</button>
-          </div>
-        ))}
+        {data.me?.picture && <img src={data.me.picture} alt="profile" />}
+        <button onClick={handleClickLogout}>logout</button>
+        <hr />
+        <button onClick={handleClickCreateToken}>create token</button>
+        <div>
+          {data.tokens.map((token) => (
+            <div key={token.id} style={{ border: "solid 1px black" }}>
+              <div>id: {token.id}</div>
+              <div>createdAt: {token.createdAt}</div>
+              <div>lastUsedAt: {token.lastUsedAt}</div>
+              <button onClick={handleClickDeleteToken(token.id)}>delete</button>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </AccountWall>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+  };
 };
 
 export default Home;
