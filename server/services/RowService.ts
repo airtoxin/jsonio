@@ -34,10 +34,14 @@ export class RowService {
         bucket: {
           connectOrCreate: {
             where: {
-              name: bucketName,
+              name_createdBy: {
+                name: bucketName,
+                createdBy,
+              },
             },
             create: {
               name: bucketName,
+              createdBy,
             },
           },
         },
@@ -87,6 +91,7 @@ export class RowService {
         id: rowId,
         bucket: {
           name: bucketName,
+          createdBy,
         },
       },
     });
@@ -123,7 +128,10 @@ export class RowService {
         },
       },
       where: {
-        name: bucketName,
+        name_createdBy: {
+          name: bucketName,
+          createdBy,
+        },
       },
     });
     assert(bucket, "Bucket not found");
@@ -137,6 +145,7 @@ export class RowService {
       where: {
         bucket: {
           name: bucketName,
+          createdBy,
         },
       },
       orderBy: {

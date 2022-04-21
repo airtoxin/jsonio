@@ -18,10 +18,11 @@ model Token {
 
 model Bucket {
   id        Int      @id @default(autoincrement())
-  name      String   @unique
+  name      String
   row       Row[]
   createdAt DateTime @default(now())
   createdBy String
+  @@unique([name, createdBy])
 }
 
 model Row {
