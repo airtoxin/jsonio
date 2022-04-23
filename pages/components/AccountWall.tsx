@@ -42,7 +42,7 @@ export const AccountWall: FunctionComponent<PropsWithChildren<{}>> = ({
   const { mutateAsync } = useAccountWallLoginMutation();
   const handleSuccess = useCallback(
     (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
-      if ("profileObj" in response) {
+      if ("tokenId" in response) {
         global.localStorage?.setItem("auth-token", response.tokenId);
         mutateAsync({}).then((account) => {
           if (!account.login) {
