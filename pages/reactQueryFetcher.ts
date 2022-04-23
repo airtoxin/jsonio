@@ -1,8 +1,10 @@
+import { ApplicationServerUrl } from "@/pages/constants";
+
 export const reactQueryFetcher =
   <TData, TVariables>(query: string, variables?: TVariables) =>
   async (): Promise<TData> => {
     const authToken = global.localStorage?.getItem("auth-token");
-    const res = await fetch("http://localhost:3000/api/graphql", {
+    const res = await fetch(`${ApplicationServerUrl}/api/graphql`, {
       method: "POST",
       ...{
         headers: authToken ? { Authorization: `Bearer: ${authToken}` } : {},
