@@ -4,9 +4,9 @@ import {
   useHomePageCreateTokenMutation,
   useHomePageDeleteTokenMutation,
   useHomePageQuery,
-} from "@gen_root/pages/index.page.gen";
+} from "@/pages/index.page.gen";
 import { useCallback } from "react";
-import { AccountWall } from "@gen_root/pages/components/AccountWall";
+import { AccountWall } from "@/pages/components/AccountWall";
 
 gql`
   query HomePage {

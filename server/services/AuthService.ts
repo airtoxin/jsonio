@@ -1,5 +1,5 @@
-import { GoogleOauthClientId } from "@gen_root/pages/api/constants";
-import { Account } from "../../models/Account";
+import { GoogleOauthClientId } from "@/pages/api/constants";
+import { Account } from "@/models/Account";
 import { OAuth2Client } from "google-auth-library";
 import { ApplicationError } from "../errors";
 import { createHmac } from "crypto";
