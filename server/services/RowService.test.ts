@@ -7,6 +7,7 @@ describe("createRow", () => {
     const bucket = await prisma.bucket.create({
       data: {
         name: "test_bucket_createRow",
+        createdBy: "test_user",
       },
     });
     return { service, bucket };
@@ -24,7 +25,7 @@ describe("createRow", () => {
   it("should create row to existing bucket", async () => {
     const { service, bucket } = await createDefaultContext();
     const data = { testData: true };
-    await service.createRow(bucket.name, data);
+    await service.createRow(bucket.name, data, "test_user");
     await expect(prisma.row.findMany()).resolves.toEqual([
       {
         id: expect.any(Number),
@@ -40,7 +41,7 @@ describe("createRow", () => {
     const { service } = await createDefaultContext();
     const data = { testData: true };
     const bucketName = `test_bucket_name_${Math.random()}`;
-    await service.createRow(bucketName, data);
+    await service.createRow(bucketName, data, "test_user");
     await expect(prisma.row.findMany()).resolves.toEqual([
       {
         id: expect.any(Number),
@@ -52,7 +53,7 @@ describe("createRow", () => {
     ]);
     await expect(
       prisma.bucket.findUnique({
-        where: { name: bucketName },
+        where: { name_createdBy: { name: bucketName, createdBy: "test_user" } },
       })
     ).resolves.not.toBeNull();
   });
@@ -60,7 +61,9 @@ describe("createRow", () => {
   it("should return created row and bucket data", async () => {
     const { service, bucket } = await createDefaultContext();
     const data = { testData: true };
-    await expect(service.createRow(bucket.name, data)).resolves.toEqual({
+    await expect(
+      service.createRow(bucket.name, data, "test_user")
+    ).resolves.toEqual({
       id: expect.any(Number),
       json: data,
       createdAt: expect.any(Date),
@@ -84,6 +87,7 @@ describe("getRow", () => {
       },
       data: {
         name: "test_bucket_getRow",
+        createdBy: "test_user",
         row: {
           create: {
             json: { getRowTest: "data" },
@@ -106,7 +110,9 @@ describe("getRow", () => {
   it("should return existing row", async () => {
     const { service, bucket } = await createDefaultContext();
     const row = bucket.row[0]!;
-    await expect(service.getRow(bucket.name, row.id)).resolves.toEqual({
+    await expect(
+      service.getRow(bucket.name, "test_user", row.id)
+    ).resolves.toEqual({
       id: row.id,
       json: row.json,
       createdAt: row.createdAt,
@@ -124,13 +130,15 @@ describe("getRow", () => {
     const { service, bucket } = await createDefaultContext();
     const row = bucket.row[0]!;
     await expect(
-      service.getRow(`random_bucket_name_${Math.random()}`, row.id)
+      service.getRow(`random_bucket_name_${Math.random()}`, "test_user", row.id)
     ).rejects.toThrowError();
   });
 
   it("should throw error when row doesn't exist", async () => {
     const { service, bucket } = await createDefaultContext();
-    await expect(service.getRow(bucket.name, -100)).rejects.toThrowError();
+    await expect(
+      service.getRow(bucket.name, "test_user", -100)
+    ).rejects.toThrowError();
   });
 });
 
@@ -143,6 +151,7 @@ describe("listRows", () => {
       },
       data: {
         name: "test_bucket_listRows",
+        createdBy: "test_user",
         row: {
           createMany: {
             data: [
@@ -171,7 +180,7 @@ describe("listRows", () => {
   it("should return rows", async () => {
     const { service, bucket } = await createDefaultContext();
     await expect(
-      service.listRows(bucket.name, { size: 100, page: 1 })
+      service.listRows(bucket.name, "test_user", { size: 100, page: 1 })
     ).resolves.toEqual({
       bucket: {
         id: bucket.id,
@@ -191,7 +200,7 @@ describe("listRows", () => {
   it("should throw error when bucket doesn't exist", async () => {
     const { service } = await createDefaultContext();
     await expect(
-      service.listRows(`test_bucket_listRows_${Math.random}`, {
+      service.listRows(`test_bucket_listRows_${Math.random}`, "test_user", {
         size: 100,
         page: 1,
       })
@@ -201,7 +210,7 @@ describe("listRows", () => {
   it("should paginate", async () => {
     const { service, bucket } = await createDefaultContext();
     await expect(
-      service.listRows(bucket.name, {
+      service.listRows(bucket.name, "test_user", {
         size: 2,
         page: 2,
       })

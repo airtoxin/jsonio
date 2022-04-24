@@ -18,20 +18,22 @@ describe("createBucket", () => {
 
   it("should create bucket", async () => {
     const { service } = createDefaultContext();
-    await service.createBucket("test_bucket");
+    await service.createBucket("test_bucket", "test_user");
     await expect(prisma.bucket.findMany()).resolves.toEqual([
       {
         id: expect.any(Number),
         name: "test_bucket",
         createdAt: expect.any(Date),
-        createdBy: null,
+        createdBy: "test_user",
       },
     ]);
   });
 
   it("should return created bucket result", async () => {
     const { service } = createDefaultContext();
-    await expect(service.createBucket("test_bucket")).resolves.toEqual({
+    await expect(
+      service.createBucket("test_bucket", "test_user")
+    ).resolves.toEqual({
       id: expect.any(Number),
       name: "test_bucket",
       createdAt: expect.any(Date),
@@ -40,7 +42,7 @@ describe("createBucket", () => {
 
   it("should not create row", async () => {
     const { service } = createDefaultContext();
-    await service.createBucket("test_bucket");
+    await service.createBucket("test_bucket", "test_user");
     await expect(prisma.row.findMany()).resolves.toEqual([]);
   });
 });
@@ -51,6 +53,7 @@ describe("deleteBucket", () => {
     const bucket1 = await prisma.bucket.create({
       data: {
         name: "test_bucket1",
+        createdBy: "test_user",
       },
     });
     const row1 = await prisma.row.create({
@@ -76,6 +79,7 @@ describe("deleteBucket", () => {
     const bucket2 = await prisma.bucket.create({
       data: {
         name: "test_bucket2",
+        createdBy: "test_user",
       },
     });
     const row3 = await prisma.row.create({
@@ -113,19 +117,21 @@ describe("deleteBucket", () => {
 
   it("should delete bucket", async () => {
     const { service, buckets } = await createDefaultContext();
-    await service.deleteBucket(buckets[0]!.name);
+    await service.deleteBucket(buckets[0]!.name, "test_user");
     await expect(prisma.bucket.findMany()).resolves.toEqual(buckets.slice(1));
   });
 
   it("should delete related rows", async () => {
     const { service, buckets, bucket2Rows } = await createDefaultContext();
-    await service.deleteBucket(buckets[0]!.name);
+    await service.deleteBucket(buckets[0]!.name, "test_user");
     await expect(prisma.row.findMany()).resolves.toEqual(bucket2Rows);
   });
 
   it("should return deleted counts", async () => {
     const { service, buckets } = await createDefaultContext();
-    await expect(service.deleteBucket(buckets[0]!.name)).resolves.toEqual({
+    await expect(
+      service.deleteBucket(buckets[0]!.name, "test_user")
+    ).resolves.toEqual({
       bucket: 1,
       rows: 2,
     });
