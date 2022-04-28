@@ -7,13 +7,23 @@ export class BucketService {
     bucketName: string,
     createdBy: string
   ): Promise<CreateBucketResult> {
-    return this.prisma.bucket.create({
+    return this.prisma.bucket.upsert({
       select: {
         id: true,
         name: true,
         createdAt: true,
       },
-      data: {
+      where: {
+        name_createdBy: {
+          name: bucketName,
+          createdBy,
+        },
+      },
+      create: {
+        name: bucketName,
+        createdBy,
+      },
+      update: {
         name: bucketName,
         createdBy,
       },

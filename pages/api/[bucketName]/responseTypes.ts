@@ -3,6 +3,11 @@ export type CreateBucketResponse = {
   createdAt: Date;
 };
 
+export type DeleteBucketResponse = {
+  success: boolean;
+  rows: number;
+};
+
 export type CreateRowResponse = {
   id: number;
   json: any;
@@ -39,4 +44,10 @@ export type GetRowResponse = {
     createdAt: Date;
     totalRows: number;
   };
+};
+
+export type UpdateRowResponse = GetRowResponse;
+
+export type DeleteRowResponse = {
+  success: boolean;
 };

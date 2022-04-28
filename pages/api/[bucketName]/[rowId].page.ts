@@ -1,9 +1,13 @@
 import { NextApiHandler } from "next";
 import { z } from "zod";
-import { GetRowResponse } from "./responseTypes";
-import { stringToInt } from "../../../server/utils";
-import { rowService } from "../../../server/services/RowService";
-import { prisma } from "../../../server/dataSources/prisma";
+import {
+  DeleteRowResponse,
+  GetRowResponse,
+  UpdateRowResponse,
+} from "./responseTypes";
+import { stringToInt } from "@/server/utils";
+import { rowService } from "@/server/services/RowService";
+import { prisma } from "@/server/dataSources/prisma";
 
 export const handler: NextApiHandler = async (req, res) => {
   const parsed = z
@@ -38,6 +42,42 @@ export const handler: NextApiHandler = async (req, res) => {
         createdAt: getRowResult.bucket.createdAt,
         totalRows: getRowResult.bucket.totalRows,
       },
+    };
+    return res.status(200).json(body);
+  }
+
+  // update row
+  if (req.method === "POST") {
+    const json = z.object({}).passthrough().parse(req.body);
+    const updateRowResult = await rowService.updateRow(
+      bucketName,
+      token.createdBy,
+      rowId,
+      json
+    );
+    const body: UpdateRowResponse = {
+      id: updateRowResult.id,
+      json: updateRowResult.json,
+      createdAt: updateRowResult.createdAt,
+      updatedAt: updateRowResult.updatedAt,
+      bucket: {
+        name: updateRowResult.bucket.name,
+        createdAt: updateRowResult.bucket.createdAt,
+        totalRows: updateRowResult.bucket.totalRows,
+      },
+    };
+    return res.status(200).json(body);
+  }
+
+  // delete row
+  if (req.method === "DELETE") {
+    const deleteRowResult = await rowService.deleteRow(
+      bucketName,
+      token.createdBy,
+      rowId
+    );
+    const body: DeleteRowResponse = {
+      success: deleteRowResult.success,
     };
     return res.status(200).json(body);
   }

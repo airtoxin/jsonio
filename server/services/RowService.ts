@@ -165,6 +165,44 @@ export class RowService {
       },
     };
   }
+
+  public async updateRow(
+    bucketName: string,
+    createdBy: string,
+    rowId: number,
+    rowData: P.InputJsonValue
+  ): Promise<UpdateRowResult> {
+    await this.prisma.row.updateMany({
+      where: {
+        id: rowId,
+        bucket: {
+          name: bucketName,
+          createdBy,
+        },
+      },
+      data: {
+        json: rowData,
+      },
+    });
+    return this.getRow(bucketName, createdBy, rowId);
+  }
+
+  public async deleteRow(
+    bucketName: string,
+    createdBy: string,
+    rowId: number
+  ): Promise<DeleteRowResult> {
+    const result = await this.prisma.row.deleteMany({
+      where: {
+        id: rowId,
+        bucket: {
+          name: bucketName,
+          createdBy,
+        },
+      },
+    });
+    return { success: result.count === 1 };
+  }
 }
 
 export type CreateRowResult = {
@@ -206,6 +244,23 @@ export type ListRowsResult = {
     createdAt: Date;
     totalRows: number;
   };
+};
+
+export type UpdateRowResult = {
+  id: number;
+  json: unknown;
+  createdAt: Date;
+  updatedAt: Date;
+  bucket: {
+    id: number;
+    name: string;
+    createdAt: Date;
+    totalRows: number;
+  };
+};
+
+export type DeleteRowResult = {
+  success: boolean;
 };
 
 export const rowService = new RowService();

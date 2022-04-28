@@ -3,12 +3,13 @@ import { z } from "zod";
 import {
   CreateBucketResponse,
   CreateRowResponse,
+  DeleteBucketResponse,
   ListRowsResponse,
 } from "./responseTypes";
-import { stringToInt } from "../../../server/utils";
-import { bucketService } from "../../../server/services/BucketService";
-import { rowService } from "../../../server/services/RowService";
-import { prisma } from "../../../server/dataSources/prisma";
+import { stringToInt } from "@/server/utils";
+import { bucketService } from "@/server/services/BucketService";
+import { rowService } from "@/server/services/RowService";
+import { prisma } from "@/server/dataSources/prisma";
 
 export const handler: NextApiHandler = async (req, res) => {
   const parsed = z.object({ bucketName: z.string() }).safeParse(req.query);
@@ -84,6 +85,21 @@ export const handler: NextApiHandler = async (req, res) => {
         createdAt: listRowsResult.bucket.createdAt,
         totalRows: listRowsResult.bucket.totalRows,
       },
+    };
+    res.status(200).json(body);
+    return;
+  }
+
+  // delete bucket
+  if (req.method === "DELETE") {
+    const deleteBucketResult = await bucketService.deleteBucket(
+      bucketName,
+      token.createdBy
+    );
+
+    const body: DeleteBucketResponse = {
+      success: deleteBucketResult.bucket === 1,
+      rows: deleteBucketResult.rows,
     };
     res.status(200).json(body);
     return;
